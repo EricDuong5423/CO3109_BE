@@ -4,10 +4,10 @@ using Microsoft.Extensions.Options;
 
 namespace CO3109_BE.Repository.XichConLan
 {
-    public interface XichConLanIRepository: IRepository<xich_con_lan>
+    public interface IXichConLanRepository: IRepository<xich_con_lan>
     {
     }
-    public class XichConLanRepository : Repository<xich_con_lan>, XichConLanIRepository
+    public class XichConLanRepository : Repository<xich_con_lan>, IXichConLanRepository
     {
         public XichConLanRepository(IOptions<MongoDbSettings> settings) : base(settings)
         {

@@ -1,6 +1,7 @@
 using CO3109_BE.Entities;
 using CO3109_BE.Repository;
 using CO3109_BE.Repository.dong_co_dien;
+using CO3109_BE.Repository.XichConLan;
 using CO3109_BE.Settings;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
@@ -19,6 +20,10 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<Idong_co_dien_kRepository, dong_co_dien_kRepository>();
 // Add dong co dien dk repository
 builder.Services.AddScoped<Idong_co_dien_dkRepository, dong_co_dien_dkRepository>();
+// Add dong co dien 4a repository
+builder.Services.AddScoped<Idong_co_dien_4aRepository, dong_co_dien_4aRepository>();
+// Add xich con lan repository
+builder.Services.AddScoped<IXichConLanRepository, XichConLanRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 //JSON serializer
