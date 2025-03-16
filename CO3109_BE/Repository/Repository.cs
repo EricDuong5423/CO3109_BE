@@ -7,15 +7,15 @@ namespace CO3109_BE.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly IMongoCollection<T> _collection;
-        public Repository(IOptions<MongoDbSettings> settings) 
+        public readonly IMongoCollection<T> _collection;
+        public Repository(IOptions<MongoDbSettings> settings, String? collectionName = null) 
         {
             //Instance of Mongo Client
             var client = new MongoClient(settings.Value.ConnectionString);
             //Database instances
             var database = client.GetDatabase(settings.Value.DatabaseName);
             //Collection instances
-            _collection = database.GetCollection<T>(typeof(T).Name);
+            _collection = database.GetCollection<T>(collectionName ?? typeof(T).Name);
         }
         public async Task<IEnumerable<T>> GetAllAsync()
         {
