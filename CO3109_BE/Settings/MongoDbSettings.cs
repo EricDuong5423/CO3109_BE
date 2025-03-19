@@ -2,7 +2,7 @@
 {
     public class MongoDbSettings
     {
-        public String ConnectionString { get; set; }
-        public String DatabaseName { get; set; }
+        public String? ConnectionString { get; set; }
+        public String? DatabaseName { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class o_bi: thanh_phan
     {
-        public String ki_hieu_o { get; set; }
+        public String? ki_hieu_o { get; set; }
         public decimal duong_kinh_trong { get; set; }
         public decimal duong_kinh_ngoai { get; set; }
         public decimal chieu_rong { get; set; }

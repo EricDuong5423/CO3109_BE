@@ -79,7 +79,7 @@ namespace CO3109_BE.Controllers.Account
             }
             catch(Exception e)
             {
-                return BadRequest(new { message = "Error" });
+                return BadRequest(new { message = e });
             }
         }
     }

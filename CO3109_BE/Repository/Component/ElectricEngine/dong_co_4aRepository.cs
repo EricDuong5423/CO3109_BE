@@ -24,7 +24,7 @@ namespace CO3109_BE.Repository.Component.ElectricEngine
         public async Task<dong_co_4a?> GetByIdTypeAsync(String id, String type)
         {
             var objectID = new ObjectId(id);
-            return await _collection.Find(Builders<dong_co_4a>.Filter.And(Builders<dong_co_4a>.Filter.Eq("_id", objectID), Builders<dong_co_4a>.Filter.Eq("Type", type))).FirstOrDefaultAsync();
+            return await _collection.Find(Builders<dong_co_4a>.Filter.And(Builders<dong_co_4a>.Filter.Eq("_id", objectID), Builders<dong_co_4a>.Filter.Eq("loai_dong_co", type))).FirstOrDefaultAsync();
         }
     }
 }
