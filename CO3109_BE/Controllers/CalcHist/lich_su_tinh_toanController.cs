@@ -79,14 +79,13 @@ namespace CO3109_BE.Controllers.CalcHist
                 //Check user and create new input data
                 var user = await _tai_khoan_khachRepository.GetByIdAsync(id_khach);
                 if (user == null) return NotFound("Tài khoản khách không tồn tại.");
-                var newInputData = await _data_dau_vaoRepository.CreateReturnAsync(data_dau_vao);
                 //Calculating for finding the right engine
                 decimal Plv = _calculatingMethod.chapter2.ShaftCapacity(data_dau_vao.F, data_dau_vao.v);
-                decimal n = _calculatingMethod.chapter2.GeneralEfficiency();
+                decimal n = _calculatingMethod.chapter2.GeneralEfficiency(data_dau_vao.nol, data_dau_vao.nbr, data_dau_vao.nx);
                 decimal Ptd = _calculatingMethod.chapter2.EquivalentCapacity(data_dau_vao.T1, data_dau_vao.T2, data_dau_vao.t1, data_dau_vao.t2, Plv);
                 decimal Pct = _calculatingMethod.chapter2.MinimalCapacity(Ptd, n);
                 decimal nlv = _calculatingMethod.chapter2.NumberOfRotation(data_dau_vao.v, data_dau_vao.D);
-                decimal usb = _calculatingMethod.chapter2.PreliminaryGearRatio();
+                decimal usb = _calculatingMethod.chapter2.PreliminaryGearRatio(data_dau_vao.uh, data_dau_vao.ux);
                 decimal nsb = _calculatingMethod.chapter2.BasicGearRatio(nlv, usb);
                 //Data for AI API
                 var jsonData = new
@@ -98,7 +97,7 @@ namespace CO3109_BE.Controllers.CalcHist
                 var reponse = await _apiService.FindBestEngine(jsonData);
                 if(reponse == "Bad request")
                 {
-                    return NotFound("AI API has something wrong, please try again");
+                    return NotFound("AI API gặp một số trục trặc mong bạn thử lại sau !!");
                 }
                 //JSON the reponse data and take the data
                 using JsonDocument doc = JsonDocument.Parse(reponse);
@@ -107,7 +106,7 @@ namespace CO3109_BE.Controllers.CalcHist
                 String? reason = root.GetProperty("reason").GetString();
                 if(bestEngineId == null || reason == null)
                 {
-                    return NotFound("AI API has something wrong, please try again");
+                    return NotFound("AI API gặp một số trục trặc mong bạn thử lại sau");
                 }
                 //Find the motor with the id
                 object? dongCo = await _dong_co_4aRepository.GetByIdTypeAsync(bestEngineId, "4a");
@@ -144,18 +143,18 @@ namespace CO3109_BE.Controllers.CalcHist
                 };
                 //Calc transmission
                 decimal u = _calculatingMethod.chapter2.GenTransRatio((decimal)takeDataDongCo.VanTocQuay, nlv);
-                decimal ux = _calculatingMethod.chapter2.ChainDriveCoef(u);
+                decimal ux = _calculatingMethod.chapter2.ChainDriveCoef(u, data_dau_vao.u1, data_dau_vao.u2);
                 //Calc power
-                decimal Pbt = _calculatingMethod.chapter2.Pbt(Plv);
-                decimal P3 = _calculatingMethod.chapter2.P3(Pbt);
-                decimal P2 = _calculatingMethod.chapter2.P2(P3);
-                decimal P1 = _calculatingMethod.chapter2.P1(P2);
+                decimal Pbt = _calculatingMethod.chapter2.Pbt(Plv, data_dau_vao.nol);
+                decimal P3 = _calculatingMethod.chapter2.P3(Pbt, data_dau_vao.nol, data_dau_vao.nx);
+                decimal P2 = _calculatingMethod.chapter2.P2(P3, data_dau_vao.nol, data_dau_vao.nbr);
+                decimal P1 = _calculatingMethod.chapter2.P1(P2, data_dau_vao.nol, data_dau_vao.nbr);
                 decimal Pm = _calculatingMethod.chapter2.Pm(P1);
                 //Calc rotation velocity
                 decimal n1 = (decimal)takeDataDongCo.VanTocQuay;
                 decimal ndc = n1;
-                decimal n2 = _calculatingMethod.chapter2.n2(n1);
-                decimal n3 = _calculatingMethod.chapter2.n3(n2);
+                decimal n2 = _calculatingMethod.chapter2.n2(n1, data_dau_vao.u1);
+                decimal n3 = _calculatingMethod.chapter2.n3(n2, data_dau_vao.u2);
                 decimal nbt = _calculatingMethod.chapter2.nbt(n3, ux);
                 //Calc torque
                 decimal T1 = _calculatingMethod.chapter2.Tm(Pm, ndc);
@@ -193,9 +192,11 @@ namespace CO3109_BE.Controllers.CalcHist
                     Tm = Tm,
                     T2 = T2,
                     T3 = T3,
-                    Tbt = Tbt
+                    Tbt = Tbt,
+                    dong_co_duoc_chon = new dong_co_chon(takeDataDongCo.Ten, takeDataDongCo.VanTocQuay, takeDataDongCo.CongSuat)
                 };
                 var newChapter2Data = await _chuong_2Repository.CreateReturnAsync(newChapter2);
+                var newInputData = await _data_dau_vaoRepository.CreateReturnAsync(data_dau_vao);
                 var newHistory = await _lich_su_tinh_toanRepository.CreateUpdateAsync(id_khach, newInputData, newChapter2Data);
                 return Ok(new { takeDataDongCo, reason, newChapter2});
             }

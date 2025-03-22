@@ -5,13 +5,6 @@ namespace CO3109_BE.Controllers.CalcHist
     public static class constClass
     {
         public const decimal nk = 1;
-        public const decimal nol = 0.993m;
-        public const decimal nbr = 0.97m;
-        public const decimal nx = 0.91m;
-        public const decimal uh = 8;
-        public const decimal ux = 2;
-        public const decimal u1 = 3.08m;
-        public const decimal u2 = 2.6m;
     }
     public class calculatingMethod
     {
@@ -28,9 +21,9 @@ namespace CO3109_BE.Controllers.CalcHist
         {
             return (F * v) / 1000;
         }
-        public decimal GeneralEfficiency()
+        public decimal GeneralEfficiency(decimal nol, decimal nbr, decimal nx)
         {
-            return constClass.nk * (decimal)Math.Pow((double)constClass.nol, 4) * (decimal)Math.Pow((double)constClass.nbr, 3) * constClass.nx;
+            return constClass.nk * (decimal)Math.Pow((double)nol, 4) * (decimal)Math.Pow((double)nbr, 3) * nx;
         }
         public decimal EquivalentCapacity(decimal T1, decimal T2, decimal t1, decimal t2, decimal Plv)
         {
@@ -50,48 +43,48 @@ namespace CO3109_BE.Controllers.CalcHist
         {
             return (60000 * v) / ((decimal)Math.PI * D);
         }
-        public decimal PreliminaryGearRatio()
+        public decimal PreliminaryGearRatio(decimal uh, decimal ux)
         {
-            return constClass.uh * constClass.ux;
+            return uh * ux;
         }
         // Method for transmission
         public decimal GenTransRatio(decimal ndc, decimal nlv)
         {
             return ndc / nlv;
         }
-        public decimal ChainDriveCoef(decimal u)
+        public decimal ChainDriveCoef(decimal u, decimal u1, decimal u2)
         {
-            return u / (constClass.u1 * constClass.u2);
+            return u / (u1 * u2);
         }
         //Method for power
-        public decimal Pbt(decimal Plv)
+        public decimal Pbt(decimal Plv, decimal nol)
         {
-            return Plv / constClass.nol;
+            return Plv / nol;
         }
-        public decimal P3(decimal Pbt)
+        public decimal P3(decimal Pbt, decimal nol, decimal nx)
         {
-            return Pbt / (constClass.nol * constClass.nx);
+            return Pbt / (nol * nx);
         }
-        public decimal P2(decimal P3)
+        public decimal P2(decimal P3, decimal nol, decimal nbr)
         {
-            return P3 / (constClass.nol * constClass.nbr);
+            return P3 / (nol * nbr);
         }
-        public decimal P1(decimal P2)
+        public decimal P1(decimal P2, decimal nol, decimal nbr)
         {
-            return P2 / (constClass.nol * constClass.nbr);
+            return P2 / (nol * nbr);
         }
         public decimal Pm(decimal P1)
         {
             return P1 / (constClass.nk);
         }
         //Method for rotation velocity
-        public decimal n2(decimal n1)
+        public decimal n2(decimal n1, decimal u1)
         {
-            return n1 / constClass.u1;
+            return n1 / u1;
         }
-        public decimal n3 (decimal n2)
+        public decimal n3 (decimal n2, decimal u2)
         {
-            return n2 / constClass.u2;
+            return n2 / u2;
         }
         public decimal nbt (decimal n3, decimal ux)
         {
