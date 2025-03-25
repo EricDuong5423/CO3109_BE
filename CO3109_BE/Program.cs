@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using RestSharp;
 using System.Reflection;
+using CO3109_BE.Repository.CalcHist.Chapter3;
 
 try
 {
@@ -60,6 +61,8 @@ try
     // Create a singleton RestClient
     builder.Services.AddSingleton<RestClient>(new RestClient("https://ai-api-f95d.onrender.com/api-ai"));
     builder.Services.AddScoped<AiApiService>();
+    // Add chuong 3 repository
+    builder.Services.AddScoped<Ichuong_3Repository, chuong_3Repository>();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
     //JSON serializer

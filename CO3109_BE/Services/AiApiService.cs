@@ -17,5 +17,13 @@ namespace CO3109_BE.Services
             var reponse = await _client.ExecuteAsync(request);
             return reponse.Content ?? "Bad request";
         }
+        public async Task<String> FindMaterial(object data)
+        {
+            var request = new RestRequest("find-material", Method.Post);
+            request.AddJsonBody(data);
+
+            var reponse = await _client.ExecuteAsync(request);
+            return reponse.Content ?? "Bad request";
+        }
     }
 }

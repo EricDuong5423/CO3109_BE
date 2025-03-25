@@ -22,5 +22,7 @@ namespace CO3109_BE.Entities.CalcHist
         public String? data_dau_vao { get; set; }
         [BsonRepresentation(BsonType.ObjectId)]
         public String? chuong_2 { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public String? chuong_3 { get; set; }
     }
 }
