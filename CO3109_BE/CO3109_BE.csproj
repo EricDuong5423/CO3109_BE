@@ -34,9 +34,15 @@
   <ItemGroup>
     <None Remove="Entities\CalcHist\Chapter3\" />
     <None Remove="Repository\CalcHist\Chapter3\" />
+    <None Remove="Controllers\CalcHist\Chapter2\" />
+    <None Remove="Controllers\CalcHist\Chapter3\" />
+    <None Remove="Controllers\CalcHist\InputData\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\CalcHist\Chapter3\" />
     <Folder Include="Repository\CalcHist\Chapter3\" />
+    <Folder Include="Controllers\CalcHist\Chapter2\" />
+    <Folder Include="Controllers\CalcHist\Chapter3\" />
+    <Folder Include="Controllers\CalcHist\InputData\" />
   </ItemGroup>
 </Project>
