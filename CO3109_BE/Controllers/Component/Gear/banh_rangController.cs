@@ -42,5 +42,11 @@ namespace CO3109_BE.Controllers.Component.Gear
             await _banh_rangRepository.UpdateAsync(id, banh_rang);
             return Ok(banh_rang);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(String id)
+        {
+            await _banh_rangRepository.DeleteAsync(id);
+            return Ok(new { message = "Đã xoá thành công" });
+        }
     }
 }
