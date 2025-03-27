@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace CO3109_BE.Entities.CalcHist.Chapter2
 {
@@ -52,18 +54,17 @@ namespace CO3109_BE.Entities.CalcHist.Chapter2
         public decimal nlv { get; set; }
         [JsonPropertyName("usb")]
         public decimal usb { get; set; }
-        public dong_co_chon? dong_co_duoc_chon { get; set; }
+        public dong_co_chon? dong_co_chon;
     }
     public class dong_co_chon
     {
-        public String? ten_dong_co { get; set; }
-        public decimal van_toc_quay { get; set; }
-        public decimal cong_suat { get; set; }
-        public dong_co_chon(String name, decimal rotationSpeed, decimal capacity)
+        [BsonRepresentation(BsonType.ObjectId)]
+        public String? Id_dong_co;
+        public String? loai_dong_co;
+        public dong_co_chon(String id, String type)
         {
-            ten_dong_co = name;
-            van_toc_quay = rotationSpeed;
-            cong_suat = capacity;
+            Id_dong_co = id;
+            loai_dong_co = type;
         }
     }
 }

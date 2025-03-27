@@ -88,7 +88,7 @@ namespace CO3109_BE.Controllers.CalcHist
                 //Declare a link and endpoint for api call
                 //Check user and create new input data
                 var user = await _tai_khoan_khachRepository.GetByIdAsync(id_khach);
-                if (user == null) return NotFound("Tài khoản khách không tồn tại.");
+                if (user == null) throw new Exception("Tài khoản khách không tồn tại.");
                 //Calculating for finding the right engine
                 decimal Plv = _calculatingMethod.chapter2.ShaftCapacity(data_dau_vao.F, data_dau_vao.v);
                 decimal n = _calculatingMethod.chapter2.GeneralEfficiency(data_dau_vao.nol, data_dau_vao.nbr, data_dau_vao.nx);
@@ -107,7 +107,7 @@ namespace CO3109_BE.Controllers.CalcHist
                 var reponse = await _apiService.FindBestEngine(jsonData);
                 if (reponse == "Bad request")
                 {
-                    return NotFound("AI API gặp một số trục trặc mong bạn thử lại sau !!");
+                    throw new Exception("AI API gặp một số trục trặc mong bạn thử lại sau !!");
                 }
                 //JSON the reponse data and take the data
                 using JsonDocument doc = JsonDocument.Parse(reponse);
@@ -116,7 +116,7 @@ namespace CO3109_BE.Controllers.CalcHist
                 String? reason = root.GetProperty("reason").GetString();
                 if (bestEngineId == null || reason == null)
                 {
-                    return NotFound("AI API gặp một số trục trặc mong bạn thử lại sau");
+                    throw new Exception("AI API gặp một số trục trặc mong bạn thử lại sau");
                 }
                 //Find the motor with the id
                 object? dongCo = await _dong_co_4aRepository.GetByIdTypeAsync(bestEngineId, "4a");
@@ -124,12 +124,13 @@ namespace CO3109_BE.Controllers.CalcHist
                 if (dongCo == null) dongCo = await _dong_co_kRepository.GetByIdTypeAsync(bestEngineId, "k");
                 if (dongCo == null)
                 {
-                    return NotFound("Không tìm thấy động cơ phù hợp.");
+                    throw new Exception("Không tìm thấy động cơ phù hợp.");
                 }
                 var takeDataDongCo = dongCo switch
                 {
                     dong_co_4a dc => new
                     {
+                        Id = dc.Id,
                         LoaiDongCo = "4a",
                         Ten = dc.ten_dong_co,
                         CongSuat = dc.cong_suat,
@@ -137,6 +138,7 @@ namespace CO3109_BE.Controllers.CalcHist
                     },
                     dong_co_dk dc => new
                     {
+                        Id = dc.Id,
                         LoaiDongCo = "dk",
                         Ten = dc.ten_dong_co,
                         CongSuat = dc.cong_suat,
@@ -144,6 +146,7 @@ namespace CO3109_BE.Controllers.CalcHist
                     },
                     dong_co_k dc => new
                     {
+                        Id = dc.Id,
                         LoaiDongCo = "k",
                         Ten = dc.ten_dong_co,
                         CongSuat = dc.cong_suat,
@@ -203,12 +206,12 @@ namespace CO3109_BE.Controllers.CalcHist
                     T2 = T2,
                     T3 = T3,
                     Tbt = Tbt,
-                    dong_co_duoc_chon = new dong_co_chon(takeDataDongCo.Ten, takeDataDongCo.VanTocQuay, takeDataDongCo.CongSuat)
+                    dong_co_chon = new dong_co_chon(takeDataDongCo.Id, takeDataDongCo.LoaiDongCo)
                 };
                 var newChapter2Data = await _chuong_2Repository.CreateReturnAsync(newChapter2);
                 var newInputData = await _data_dau_vaoRepository.CreateReturnAsync(data_dau_vao);
                 var newHistory = await _lich_su_tinh_toanRepository.CreateUpdateAsync(id_khach, newInputData, newChapter2Data);
-                return Ok(new { takeDataDongCo, reason, newChapter2, newHistory.Id });
+                return Ok(new { reason, newChapter2, id_lich_su_tinh_toan = newHistory.Id });
             }
             catch (Exception e)
             {
@@ -328,7 +331,6 @@ namespace CO3109_BE.Controllers.CalcHist
                     chuong3,
                     xich_nho = xichNhoObject,
                     xich_lon = xichLonObject,
-                    xich_con_lan = RollerChainObject
                 });
             }
             catch(Exception e)
